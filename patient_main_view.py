@@ -2,6 +2,7 @@ import sqlite3
 import datetime
 import customtkinter as ctk
 
+
 class PatientMainView(ctk.CTk):
     def __init__(self, patient_id):
         super().__init__()
@@ -145,10 +146,9 @@ class PatientMainView(ctk.CTk):
         self.medication_button.pack(pady=15)
 
     def show_visual_data(self):
-        for widget in self.main_frame.winfo_children():
-            widget.destroy()
-        title = ctk.CTkLabel(self.main_frame, text="Visual Data (coming soon)", font=("Arial", 22, "bold"), text_color="#204080")
-        title.pack(pady=20)
+        self.destroy()
+        from patient_indexes_view import PatientIndexes
+        PatientIndexes(patient_id=self.patient_id, patient_name=self.patient_name)
 
     def open_questionnaire(self):
         self.current_question_index = 0
@@ -1008,5 +1008,5 @@ class PatientMainView(ctk.CTk):
 
 
 if __name__ == "__main__":
-    app = PatientInterface(patient_id="PAT001")
+    app = PatientMainView(patient_id="PAT001")
     app.mainloop() 
