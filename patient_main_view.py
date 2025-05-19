@@ -2,7 +2,7 @@ import sqlite3
 import datetime
 import customtkinter as ctk
 
-class PatientInterface(ctk.CTk):
+class PatientMainView(ctk.CTk):
     def __init__(self, patient_id):
         super().__init__()
 
