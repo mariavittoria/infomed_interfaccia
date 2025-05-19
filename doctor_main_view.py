@@ -44,13 +44,6 @@ class DoctorMainView(customtkinter.CTk):
                 fg_color="transparent", hover_color="#d9d9d9", corner_radius=0
             )
             btn.grid(row=i + 1, column=0, padx=10, pady=5, sticky="ew")
-
-        # buttons_text = ["OSA patients", "Follow up patients", "Possible Follow up", "New Therapy", "Visits"]
-        # for i, txt in enumerate(buttons_text):
-        #      color = "#204080" if txt == "OSA patients" else "transparent" #colore casella selezionata
-        #      btn = customtkinter.CTkButton(self.sidebar, text=txt, height=40, fg_color=color,
-        #                                    hover_color="#e0e0e0", corner_radius=0)
-        #      btn.grid(row=i + 1, column=0, padx=10, pady=5, sticky="ew")
        
 
         # Main content
@@ -66,30 +59,6 @@ class DoctorMainView(customtkinter.CTk):
             widget.destroy()
         content_function()
 
-        # title = customtkinter.CTkLabel(self.main_view, text="OSA patients", font=("Arial", 20, "bold"), text_color="black")
-        # title.grid(row=0, column=0, columnspan=4, pady=20)
-
-        # # Recupera dati dal database
-        # columns, data = self.get_osa_patients()
-
-        # # Treeview style (facoltativo, per renderla un po' più carina)
-        # style = ttk.Style()
-        # style.theme_use("default")
-        # style.configure("Treeview", background="#f0f4ff", foreground="black", rowheight=25, fieldbackground="#f0f4ff")
-        # style.map("Treeview", background=[('selected', '#4a7abc')])
-
-        # # Crea la tabella Treeview
-        # self.tree = ttk.Treeview(self.main_view, columns=columns, show='headings', height=12)
-        # self.tree.grid(row=1, column=0, columnspan=4, padx=20, pady=10, sticky="nsew")
-
-        # # Inserisci le intestazioni
-        # for col in columns:
-        #      self.tree.heading(col, text=col)
-        #      self.tree.column(col, anchor="center", width=100)
-
-        # # Inserisci i dati
-        # for row in data:
-        #      self.tree.insert("", "end", values=row)
     def get_osa_patients(self):
             conn = sqlite3.connect("Database_proj.db")
             cursor = conn.cursor()
