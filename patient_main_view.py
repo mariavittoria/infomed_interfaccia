@@ -22,7 +22,7 @@ class PatientMainView(ctk.CTk):
         self.slot_buttons = {}
 
         self.title(f"Patient Dashboard - {self.patient_name}")
-        self.geometry("1000x600")
+        self.geometry("900x600")
         self.center_window()
 
         # Layout principale
@@ -30,11 +30,11 @@ class PatientMainView(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)
 
         # Sidebar
-        self.sidebar_frame = ctk.CTkFrame(self, corner_radius=0)
+        self.sidebar_frame = ctk.CTkFrame(self, corner_radius=0, fg_color="#1f2a44")
         self.sidebar_frame.grid(row=0, column=0, sticky="nsw")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
 
-        self.profile_label = ctk.CTkLabel(self.sidebar_frame, text=f"👤 {self.patient_name}", font=("Arial", 14, "bold"))
+        self.profile_label = ctk.CTkLabel(self.sidebar_frame, text=f"👤 {self.patient_name}", font=("Arial", 14, "bold"), text_color="white")
         self.profile_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         self.home_button = ctk.CTkButton(self.sidebar_frame, text="Home", command=self.show_home, width=140)
@@ -52,7 +52,7 @@ class PatientMainView(ctk.CTk):
         self.notification_button.grid(row=3, column=0, padx=10, pady=10)
 
         # Main frame
-        self.main_frame = ctk.CTkFrame(self, corner_radius=10, fg_color="#e6f0ff")
+        self.main_frame = ctk.CTkFrame(self, corner_radius=10, fg_color="#f4f9ff")
         self.main_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
 
         self.question_text_map = {
@@ -75,7 +75,7 @@ class PatientMainView(ctk.CTk):
         self.show_home()
 
     def center_window(self):
-        w = 1000
+        w = 900
         h = 600
         x = (self.winfo_screenwidth() // 2) - (w // 2)
         y = (self.winfo_screenheight() // 2) - (h // 2)
@@ -85,23 +85,23 @@ class PatientMainView(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        title = ctk.CTkLabel(self.main_frame, text="Welcome to your Patient Portal", font=("Arial", 22, "bold"), text_color="#204080")
+        title = ctk.CTkLabel(self.main_frame, text="Welcome to your Patient Portal", font=("Arial", 24, "bold"), text_color="#204080")
         title.pack(pady=20)
 
         if self.questionnaire_done:
-            info_label = ctk.CTkLabel(self.main_frame, text="✅ Questionnaire already completed", font=("Arial", 16))
+            info_label = ctk.CTkLabel(self.main_frame, text="✅ Questionnaire already completed", font=("Arial", 16), text_color="#102040")
             info_label.pack(pady=10)
 
             button_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
             button_frame.pack(pady=5)
 
-            self.questionnaire_button = ctk.CTkButton(button_frame, text="✔️ Questionnaire completed", width=220, state="disabled")
+            self.questionnaire_button = ctk.CTkButton(button_frame, text="✔️ Questionnaire completed", width=220, state="disabled", fg_color="#3366cc")
             self.questionnaire_button.pack(side="left", padx=(0, 5))
 
             self.answers_container = ctk.CTkFrame(self.main_frame, fg_color="transparent")
             self.answers_container.pack_forget()
 
-            self.answers_scroll_canvas = ctk.CTkCanvas(self.answers_container, bg="#e6f0ff", highlightthickness=0)
+            self.answers_scroll_canvas = ctk.CTkCanvas(self.answers_container, bg="#f4f9ff", highlightthickness=0)
             self.answers_scroll_canvas.pack(side="left", fill="both", expand=True)
 
             scrollbar = ctk.CTkScrollbar(self.answers_container, orientation="vertical", command=self.answers_scroll_canvas.yview)
@@ -121,7 +121,7 @@ class PatientMainView(ctk.CTk):
                 if key in ["PatientID", "Date"]:
                     continue
                 question = self.question_text_map.get(key, key)
-                label = ctk.CTkLabel(self.answers_frame_inner, text=f"{question}\nAnswer: {answer}", anchor="w", justify="left", wraplength=700)
+                label = ctk.CTkLabel(self.answers_frame_inner, text=f"{question}\nAnswer: {answer}", anchor="w", justify="left", wraplength=700, text_color="#102040")
                 label.pack(anchor="w", padx=10, pady=5)
 
             def toggle_answers():
@@ -132,17 +132,17 @@ class PatientMainView(ctk.CTk):
                     self.answers_container.pack(pady=10, fill="both", expand=True)
                     self.toggle_btn.configure(text="⬆️")
 
-            self.toggle_btn = ctk.CTkButton(button_frame, text="⬇️", width=40, command=toggle_answers)
+            self.toggle_btn = ctk.CTkButton(button_frame, text="⬇️", width=40, command=toggle_answers, fg_color="#3366cc")
             self.toggle_btn.pack(side="left")
 
         else:
-            self.questionnaire_button = ctk.CTkButton(self.main_frame, text="Questionnaire", width=250, command=self.open_questionnaire)
+            self.questionnaire_button = ctk.CTkButton(self.main_frame, text="Questionnaire", width=250, command=self.open_questionnaire, fg_color="#3366cc")
             self.questionnaire_button.pack(pady=15)
 
-        self.visits_button = ctk.CTkButton(self.main_frame, text="Visits", width=250, command=self.open_visits)
+        self.visits_button = ctk.CTkButton(self.main_frame, text="Visits", width=250, command=self.open_visits, fg_color="#3366cc")
         self.visits_button.pack(pady=15)
 
-        self.medication_button = ctk.CTkButton(self.main_frame, text="Medication", width=250, command=self.open_medication)
+        self.medication_button = ctk.CTkButton(self.main_frame, text="Medication", width=250, command=self.open_medication, fg_color="#3366cc")
         self.medication_button.pack(pady=15)
 
     def show_visual_data(self):
