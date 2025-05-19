@@ -4,6 +4,8 @@ import os
 from PIL import Image
 import tkinter.ttk as ttk
 
+print("Login.py loaded")
+
 class AppProg:
     def __init__(self):
         self.user = ""
