@@ -486,7 +486,7 @@ class PatientMainView(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        title = ctk.CTkLabel(self.main_frame, text="Your Appointments", font=("Arial", 20, "bold"))
+        title = ctk.CTkLabel(self.main_frame, text="Your Appointments", font=("Arial", 20, "bold"), text_color="#204080")
         title.pack(pady=10)
 
         # Create a frame for the table
@@ -899,7 +899,7 @@ class PatientMainView(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        title = ctk.CTkLabel(self.main_frame, text="Notifications", font=("Arial", 20, "bold"))
+        title = ctk.CTkLabel(self.main_frame, text="Notifications", font=("Arial", 20, "bold"), text_color="#204080")
         title.pack(pady=10)
 
         # Create a frame for notifications
