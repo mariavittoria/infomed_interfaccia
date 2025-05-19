@@ -283,10 +283,10 @@ class PatientMainView(ctk.CTk):
         button_frame.grid_columnconfigure(0, weight=1)
         button_frame.grid_columnconfigure(1, weight=1)
 
-        book_button = ctk.CTkButton(button_frame, text="Book a visit", width=150, fg_color="#9b59b6", command=self.book_visit)
+        book_button = ctk.CTkButton(button_frame, text="Book a visit", width=150, fg_color="#3366cc", command=self.book_visit)
         book_button.grid(row=0, column=0, padx=20)
 
-        check_button = ctk.CTkButton(button_frame, text="Check appointments", width=150, fg_color="#b76ba3", command=self.check_appointment)
+        check_button = ctk.CTkButton(button_frame, text="Check appointments", width=150, fg_color="#3366cc", command=self.check_appointment)
         check_button.grid(row=0, column=1, padx=20)
 
     def book_visit(self):
@@ -575,7 +575,7 @@ class PatientMainView(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        title = ctk.CTkLabel(self.main_frame, text="Medication Management", font=("Arial", 20, "bold"))
+        title = ctk.CTkLabel(self.main_frame, text="Medication Management", font=("Arial", 20, "bold"), text_color="#204080")
         title.pack(pady=20)
 
         # Create buttons frame
@@ -608,7 +608,7 @@ class PatientMainView(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        title = ctk.CTkLabel(self.main_frame, text="Your Medications", font=("Arial", 20, "bold"))
+        title = ctk.CTkLabel(self.main_frame, text="Your Medications", font=("Arial", 20, "bold"),text_color="#204080")
         title.pack(pady=20)
 
         # Create table frame
@@ -827,7 +827,7 @@ class PatientMainView(ctk.CTk):
         for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        title = ctk.CTkLabel(self.main_frame, text="Your Therapy", font=("Arial", 20, "bold"))
+        title = ctk.CTkLabel(self.main_frame, text="Your Therapy", font=("Arial", 20, "bold"), text_color="#204080")
         title.pack(pady=20)
 
         # Create therapy display frame
