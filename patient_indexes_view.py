@@ -1,11 +1,13 @@
 # patient_indexes_view.py
 import customtkinter as ctk
+import sqlite3
 
 class PatientIndexes(ctk.CTk):
     def __init__(self, patient_id, patient_name="Unknown Patient"):
         super().__init__()
         self.patient_id = patient_id
         self.patient_name = patient_name
+        self.notification_count = self.get_notification_count()
 
         self.title(f"Patient Indexes - {self.patient_name}")
         self.geometry("900x600")
@@ -24,8 +26,16 @@ class PatientIndexes(ctk.CTk):
         self.home_button = ctk.CTkButton(self.sidebar_frame, text="Home", command=self.go_home, width=140)
         self.home_button.grid(row=1, column=0, padx=10, pady=10)
 
-        self.visual_data_button = ctk.CTkButton(self.sidebar_frame, text="Visual Data", width=140, state="disabled", fg_color="#3366cc")
+        self.visual_data_button = ctk.CTkButton(self.sidebar_frame, text="Visual Data", width=140)
         self.visual_data_button.grid(row=2, column=0, padx=10, pady=10)
+
+        self.notification_button = ctk.CTkButton(
+            self.sidebar_frame,
+            text=f"Notifications ({self.notification_count})",
+            command=self.show_notifications,
+            width=140
+        )
+        self.notification_button.grid(row=3, column=0, padx=10, pady=10)
 
         self.main_frame = ctk.CTkFrame(self, corner_radius=10, fg_color="#f4f9ff")
         self.main_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
@@ -40,6 +50,27 @@ class PatientIndexes(ctk.CTk):
         x = (self.winfo_screenwidth() // 2) - (w // 2)
         y = (self.winfo_screenheight() // 2) - (h // 2)
         self.geometry(f"{w}x{h}+{x}+{y}")
+
+    def get_notification_count(self):
+        conn = sqlite3.connect("Database_proj.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT COUNT(*) FROM Notifications 
+            WHERE PatientID = ? AND IsRead = 0
+        """, (self.patient_id,))
+        count = cursor.fetchone()[0]
+        conn.close()
+        return count
+
+    def update_notification_button(self):
+        self.notification_count = self.get_notification_count()
+        self.notification_button.configure(text=f"Notifications ({self.notification_count})")
+
+    def show_notifications(self):
+        from patient_main_view import PatientMainView
+        self.destroy()
+        main_view = PatientMainView(patient_id=self.patient_id)
+        main_view.show_notifications()
 
     def show_indexes(self):
         title = ctk.CTkLabel(self.main_frame, text="Select an Index", font=("Arial", 24, "bold"), text_color="#204080")

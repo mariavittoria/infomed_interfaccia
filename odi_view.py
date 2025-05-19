@@ -12,6 +12,7 @@ class ODIView(ctk.CTk):
         super().__init__()
         self.patient_id = patient_id
         self.patient_name = patient_name
+        self.notification_count = self.get_notification_count()
 
         self.title(f"ODI - {self.patient_name}")
         self.geometry("900x600")
@@ -32,6 +33,14 @@ class ODIView(ctk.CTk):
 
         self.visual_data_button = ctk.CTkButton(self.sidebar_frame, text="Visual Data", command=self.go_visual_data, width=140)
         self.visual_data_button.grid(row=2, column=0, padx=10, pady=10)
+
+        self.notification_button = ctk.CTkButton(
+            self.sidebar_frame,
+            text=f"Notifications ({self.notification_count})",
+            command=self.show_notifications,
+            width=140
+        )
+        self.notification_button.grid(row=3, column=0, padx=10, pady=10)
 
         self.main_frame = ctk.CTkFrame(self, corner_radius=10, fg_color="#f4f9ff")
         self.main_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
@@ -54,6 +63,27 @@ class ODIView(ctk.CTk):
         data = cursor.fetchall()
         conn.close()
         return data
+
+    def get_notification_count(self):
+        conn = sqlite3.connect("Database_proj.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT COUNT(*) FROM Notifications 
+            WHERE PatientID = ? AND IsRead = 0
+        """, (self.patient_id,))
+        count = cursor.fetchone()[0]
+        conn.close()
+        return count
+
+    def update_notification_button(self):
+        self.notification_count = self.get_notification_count()
+        self.notification_button.configure(text=f"Notifications ({self.notification_count})")
+
+    def show_notifications(self):
+        from patient_main_view import PatientMainView
+        self.destroy()
+        main_view = PatientMainView(patient_id=self.patient_id)
+        main_view.show_notifications()
 
     def show_odi(self):
         data = self.get_indexes_data()
