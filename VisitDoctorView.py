@@ -3,6 +3,7 @@ import os
 from PIL import Image
 import sqlite3
 import tkinter.ttk as ttk
+import datetime
 
 class VisitDoctorView(customtkinter.CTk):
     def __init__(self, parent_frame, user_id):
@@ -20,7 +21,7 @@ class VisitDoctorView(customtkinter.CTk):
             text="Fix Visit",
             width=200,
             height=40,
-            command=self.fix_visit
+            
         )
         fix_visit_btn.grid(row=0, column=0, padx=20, pady=10)
 
@@ -33,10 +34,4 @@ class VisitDoctorView(customtkinter.CTk):
         )
         view_appointment_btn.grid(row=1, column=0, padx=20, pady=10)
 
-    def fix_visit(self):
-        # TODO: Implement fix visit functionality
-        print("Fix visit button clicked")
-
-    def view_appointment(self):
-        # TODO: Implement view appointment functionality
-        print("View appointment button clicked") 
+   
