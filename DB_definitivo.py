@@ -224,7 +224,8 @@ VALUES (?, ?, ?, ?)
 therapies = [
     ("PAT001", "Monitoraggio continuo con eventuale follow-up dopo 10 giorni"),
     ("PAT002", "Controllo pressorio settimanale"),
-    ("PAT003", "Controllo asma trimestrale")
+    ("PAT003", "Controllo asma trimestrale"),
+    ("PAT010", "CPAP_350_x7_gg")
 ]
 cursor.executemany("""
 INSERT OR IGNORE INTO Therapy (PatientID, Note)
@@ -241,7 +242,12 @@ indexes = [
     ("PAT010", "2025-04-22", 2.5, 1.8, 96.5, 90.0),
     ("PAT011", "2025-04-22", 4.5, 0.7, 96.5, 90.0),
     ("PAT021", "2025-04-22", 7.5, 1.3, 96.5, 90.0),
-    ("PAT010", "2025-04-24", 0.5, 1.5, 96.5, 90.0)
+    ("PAT010", "2025-04-24", 0.5, 1.5, 96.5, 90.0),
+    ("PAT010", "2025-04-25", 1, 1, 96.5, 90.0),
+    ("PAT010", "2025-04-26", 1.2, 1.5, 96.5, 90.0),
+    ("PAT010", "2025-04-27", 0.8, 7, 96.5, 90.0),
+    ("PAT010", "2025-04-28", 4, 8, 96.5, 90.0),
+    ("PAT010", "2025-04-29", 10, 15, 96.5, 90.0)
 ]
 cursor.executemany("""
 INSERT OR IGNORE INTO Indexes (PatientID, Date, ValueAHI, ValueODI, MeanSpO2, MinSpO2)
