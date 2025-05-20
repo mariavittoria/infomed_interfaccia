@@ -89,6 +89,16 @@ class ODIView(ctk.CTk):
         data = self.get_indexes_data()
         last_value = data[0][1] if data else "N/A"
 
+        # Add back button
+        back_btn = ctk.CTkButton(
+            self.main_frame,
+            text="← Back",
+            width=100,
+            fg_color="#204080",
+            command=self.go_visual_data
+        )
+        back_btn.pack(anchor="w", padx=10, pady=20)
+        
         today = datetime.date(2025, 4, 21)
         seven_days_ago = today - datetime.timedelta(days=7)
         seven_days_data = [value for date_str, value in data if datetime.date.fromisoformat(date_str) >= seven_days_ago]
@@ -97,6 +107,8 @@ class ODIView(ctk.CTk):
         ctk.CTkLabel(self.main_frame, text="ODI", font=("Arial", 24, "bold"), text_color="#204080").pack(pady=(10, 5))
         ctk.CTkLabel(self.main_frame, text=f"Last Value: {last_value}", font=("Arial", 16), text_color="#102040").pack(pady=5)
         ctk.CTkLabel(self.main_frame, text=f"7 Days Mean: {seven_days_mean}", font=("Arial", 16), text_color="#102040").pack(pady=5)
+
+        
 
         plot_frame = ctk.CTkFrame(self.main_frame, height=350, width=800, fg_color="white")
         plot_frame.pack(pady=20)

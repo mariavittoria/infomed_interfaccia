@@ -421,6 +421,7 @@ class PatientMainView(ctk.CTk):
             SELECT date, time, doctor_name
             FROM Appointments
             WHERE status = 'available'
+                AND doctor_id = 'DOC001'
               AND date BETWEEN ? AND ?
             ORDER BY date, time
         """, (start_date.isoformat(), end_date.isoformat()))
@@ -494,7 +495,7 @@ class PatientMainView(ctk.CTk):
         table_frame.pack(padx=20, pady=10, fill="both", expand=True)
 
         # Create headers
-        headers = ["Date", "Time", "Doctor"]
+        headers = ["Date", "Time", "Doctor", "Actions"]
         for i, header in enumerate(headers):
             label = ctk.CTkLabel(table_frame, text=header, font=("Arial", 14, "bold"))
             label.grid(row=0, column=i, padx=20, pady=10, sticky="w")
@@ -515,7 +516,7 @@ class PatientMainView(ctk.CTk):
             
             if not appointments:
                 no_appointments = ctk.CTkLabel(table_frame, text="No appointments found", font=("Arial", 14))
-                no_appointments.grid(row=1, column=0, columnspan=3, pady=20)
+                no_appointments.grid(row=1, column=0, columnspan=4, pady=20)
             else:
                 # Display appointments
                 for i, (date, time, doctor) in enumerate(appointments, 1):
@@ -539,15 +540,58 @@ class PatientMainView(ctk.CTk):
                     date_label.grid(row=i, column=0, padx=20, pady=5, sticky="w")
                     time_label.grid(row=i, column=1, padx=20, pady=5, sticky="w")
                     doctor_label.grid(row=i, column=2, padx=20, pady=5, sticky="w")
+                    
+                    # Add delete button
+                    delete_btn = ctk.CTkButton(
+                        table_frame,
+                        text="Delete",
+                        width=60,
+                        fg_color="red",
+                        command=lambda d=date, t=time, doc=doctor: self.delete_appointment(d, t, doc)
+                    )
+                    delete_btn.grid(row=i, column=3, padx=20, pady=5)
+                    
         except sqlite3.Error as e:
             error_label = ctk.CTkLabel(table_frame, text=f"Error loading appointments: {str(e)}", text_color="red")
-            error_label.grid(row=1, column=0, columnspan=3, pady=20)
+            error_label.grid(row=1, column=0, columnspan=4, pady=20)
         finally:
             conn.close()
 
         # Add back button
         back_button = ctk.CTkButton(self.main_frame, text="Back to Home", command=self.show_home)
         back_button.pack(pady=20)
+
+    def delete_appointment(self, date, time, doctor):
+        conn = sqlite3.connect("Database_proj.db")
+        cursor = conn.cursor()
+        
+        try:
+            # Update appointment status back to available
+            cursor.execute("""
+                UPDATE Appointments
+                SET patient_id = NULL, patient_name = NULL, status = 'available'
+                WHERE date = ? AND time = ? AND doctor_name = ? AND patient_id = ?
+            """, (date, time, doctor, self.patient_id))
+            
+            conn.commit()
+            
+            # Create notification for cancellation
+            message = f"Your appointment with Dr. {doctor} on {date} at {time} has been cancelled"
+            cursor.execute("""
+                INSERT INTO Notifications (PatientID, PatientName, Type, Message)
+                VALUES (?, ?, 'CANCELLATION', ?)
+            """, (self.patient_id, self.patient_name, message))
+            
+            conn.commit()
+            
+            # Refresh the appointments view
+            self.check_appointment()
+            
+        except sqlite3.Error as e:
+            error_label = ctk.CTkLabel(self.main_frame, text=f"Error cancelling appointment: {str(e)}", text_color="red")
+            error_label.pack(pady=20)
+        finally:
+            conn.close()
 
     def create_notification(self, date, time, doctor):
         conn = sqlite3.connect("Database_proj.db")

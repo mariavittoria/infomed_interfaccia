@@ -91,6 +91,16 @@ class AHIView(ctk.CTk):
         data = self.get_indexes_data()
         last_night_value = data[0][1] if data else "N/A"
 
+        # Add back button
+        back_btn = ctk.CTkButton(
+            self.main_frame,
+            text="← Back",
+            width=100,
+            fg_color="#204080",
+            command=self.go_visual_data
+        )
+        back_btn.pack(anchor="w", padx=20, pady=20)
+        
         today = datetime.date(2025, 4, 21)  # finto oggi
         seven_days_ago = today - datetime.timedelta(days=7)
         seven_days_data = [value for date_str, value in data if datetime.date.fromisoformat(date_str) >= seven_days_ago]
