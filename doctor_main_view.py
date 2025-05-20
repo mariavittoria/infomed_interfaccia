@@ -91,8 +91,8 @@ class DoctorMainView(customtkinter.CTk):
             FollowUpPatientsView(self.main_view, self.user_id)
     
     def go_to_visits(self):
-            from OSA_Patients import OSAPatientsView # attenzione al nome file!
-            OSAPatientsView(user_id=self.user_id)
+            from VisitDoctorView import VisitDoctorView # attenzione al nome file!
+            VisitDoctorView(self.main_view, self.user_id)
 
     def go_to_7_days_ok(self):
             from Seven_Days_ok_patients import Seven_Days_Ok_PatientsView# attenzione al nome file!
