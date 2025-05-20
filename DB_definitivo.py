@@ -177,7 +177,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ("Lucia", "Garofalo", "2004-06-15", 1.65, 60, 25, "F", "Italiano", "Nessuna", "PAT002", "345678", "1234567899"),
     ("Marco", "Verdi", "1992-03-22", 1.80, 85, 32, "M", "Italiano", "Asma lieve", "PAT003", "pass333", "1234562222"),
     ("Marco", "Esposito", "1956-06-16", 1.87, 90, 30, "M", "Italiano", "Osa moderata", "PAT009", "pass333", "1234562226"),
-    ("Angelo", "Galli", "1992-04-26", 1.70, 80, 30, "M", "Italiano", "Osa moderata", "PAT010", "pass333", "1234562226")
+    ("Angelo", "Galli", "1992-04-26", 1.70, 80, 30, "M", "Italiano", "Osa moderata", "PAT010", "pass333", "1234562228")
 ])
 
 
