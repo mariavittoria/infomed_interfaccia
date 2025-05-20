@@ -249,14 +249,15 @@ VALUES (?, ?, ?, ?, ?, ?)
 """, indexes)
 
 # Inserimento Questionnaire
-questionnaires = [
-    ("PAT001", "2025-04-20", 1, 2, "Nota2 esempio", 3, 4, 5, 6, 7, 8, "Q9 esempio", 10, "Q11 esempio", 12, "Q13 esempio"),
-    ("PAT002", "2025-04-21", 2, 3, "Nota2 esempio", 4, 5, 6, 7, 8, 9, "Q9 esempio", 11, "Q11 esempio", 13, "Q13 esempio")
-]
-cursor.executemany("""
-INSERT OR IGNORE INTO Questionnaire (PatientID, Date, Q1, Q2, Nota2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-""", questionnaires)
+#questionnaires = [
+#    ("PAT001", "2025-04-20", 1, 2, "Nota2 esempio", 3, 4, 5, 6, 7, 8, "Q9 esempio", 10, "Q11 esempio", 12, "Q13 esempio"),
+#    ("PAT002", "2025-04-21", 2, 3, "Nota2 esempio", 4, 5, 6, 7, 8, 9, "Q9 esempio", 11, "Q11 esempio", 13, "Q13 esempio")
+#]
+
+#cursor.executemany("""
+#INSERT OR IGNORE INTO Questionnaire (PatientID, Date, Q1, Q2, Nota2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13)
+#VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+#""", questionnaires)
 
 # Inserimento Notifications
 notifications = [
