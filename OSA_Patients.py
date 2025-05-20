@@ -307,7 +307,7 @@ class OSAPatientsView(customtkinter.CTk):
 
     def view_therapy(self, patient_id, patient_name):
         # Clear main frame
-        for widget in self.main_frame.winfo_children():
+        for widget in self.main_frame2.winfo_children():
             widget.destroy()
 
         # Add back button
