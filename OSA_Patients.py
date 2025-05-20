@@ -132,7 +132,7 @@ class OSAPatientsView(customtkinter.CTk):
             text="View/Modify Therapy",
             width=250,
             fg_color="#b76ba3",
-            command=lambda: self.view_therapy(self.patient_id, self.patient_name)
+            command=lambda: self.view_therapy(self.patient_id)
         )
         therapy_btn.pack(pady=15)
 
@@ -305,13 +305,13 @@ class OSAPatientsView(customtkinter.CTk):
         finally:
             conn.close()
 
-    def view_therapy(self, patient_id, patient_name):
-        # Clear main frame
-        for widget in self.main_frame2.winfo_children():
+    def view_therapy(self, patient_id):
+    # Clear main frame
+        for widget in self.main_frame.winfo_children():
             widget.destroy()
 
-        # Add back button
-        back_btn = customtkinter.CTkButton(
+    # Add back button
+            back_btn = customtkinter.CTkButton(
             self.main_frame,
             text="← Back",
             width=100,
@@ -320,28 +320,30 @@ class OSAPatientsView(customtkinter.CTk):
         )
         back_btn.pack(anchor="w", padx=20, pady=20)
 
-        # Add title
+    # Add title
         title = customtkinter.CTkLabel(self.main_frame, text="Patient Therapy", font=("Arial", 24, "bold"), text_color="#204080")
         title.pack(pady=20)
 
-        # Create main content frame
+    # Create main content frame
         content_frame = customtkinter.CTkFrame(self.main_frame, fg_color="transparent")
         content_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-        # Create table frame for drugs
+    # Create table frame for drugs
         table_frame = customtkinter.CTkFrame(content_frame)
         table_frame.pack(fill="x", pady=(0, 20))
 
-        # Table headers
+    # Table headers
         headers = ["Drug Information", "Start Date", "End Date"]
         for i, header in enumerate(headers):
             label = customtkinter.CTkLabel(table_frame, text=header, font=("Arial", 14, "bold"))
             label.grid(row=0, column=i, padx=20, pady=10, sticky="w")
 
-        # Get drugs from database
+    # Get drugs from database
         conn = sqlite3.connect("Database_proj.db")
         cursor = conn.cursor()
-        
+
+        self.drug_entries = []
+
         try:
             cursor.execute("""
                 SELECT Note, StartDate, EndDate
@@ -349,69 +351,81 @@ class OSAPatientsView(customtkinter.CTk):
                 WHERE PatientID = ?
                 ORDER BY StartDate DESC
             """, (patient_id,))
-            
+        
             drugs = cursor.fetchall()
-            
+
             if not drugs:
                 no_drugs_label = customtkinter.CTkLabel(table_frame, text="No medications found", font=("Arial", 14))
                 no_drugs_label.grid(row=1, column=0, columnspan=3, pady=20)
             else:
                 for i, (note, start_date, end_date) in enumerate(drugs, 1):
-                    # Drug info
-                    note_label = customtkinter.CTkLabel(table_frame, text=note, wraplength=300)
-                    note_label.grid(row=i, column=0, padx=20, pady=5, sticky="w")
-                    
-                    # Dates
-                    start_label = customtkinter.CTkLabel(table_frame, text=start_date)
-                    start_label.grid(row=i, column=1, padx=20, pady=5, sticky="w")
-                    
-                    end_label = customtkinter.CTkLabel(table_frame, text=end_date)
-                    end_label.grid(row=i, column=2, padx=20, pady=5, sticky="w")
+                    note_entry = customtkinter.CTkEntry(table_frame, width=300)
+                    note_entry.insert(0, note)
+                    note_entry.grid(row=i, column=0, padx=20, pady=5, sticky="w")
 
-            # Get current therapy
+                    start_entry = customtkinter.CTkEntry(table_frame, width=150)
+                    start_entry.insert(0, start_date)
+                    start_entry.grid(row=i, column=1, padx=20, pady=5, sticky="w")
+
+                    end_entry = customtkinter.CTkEntry(table_frame, width=150)
+                    end_entry.insert(0, end_date)
+                    end_entry.grid(row=i, column=2, padx=20, pady=5, sticky="w")
+
+                    self.drug_entries.append((note_entry, start_entry, end_entry))
+
+        # Save button for drugs
+            drug_save_btn = customtkinter.CTkButton(
+                content_frame,
+                text="Save Drugs",
+                fg_color="#6ba37f",
+                width=200,
+                command=lambda: self.save_drugs(patient_id)
+            )
+            drug_save_btn.pack(pady=10)
+
+        # Get current therapy
             cursor.execute("""
-                SELECT Note
+                SELECT ID, Note
                 FROM Therapy
                 WHERE PatientID = ?
-                ORDER BY ID DESC
-                LIMIT 1
             """, (patient_id,))
             
             current_therapy = cursor.fetchone()
-            
-            # Create therapy input frame
+            self.current_therapy_id = current_therapy[0] if current_therapy else None
+
+        # Create therapy input frame
             therapy_frame = customtkinter.CTkFrame(content_frame)
             therapy_frame.pack(fill="x", pady=20)
-            
+
             therapy_label = customtkinter.CTkLabel(
                 therapy_frame,
                 text="Current Therapy:",
                 font=("Arial", 14, "bold")
             )
             therapy_label.pack(anchor="w", padx=20, pady=(20, 10))
-            
+
             # Therapy text input
-            therapy_text = customtkinter.CTkTextbox(
+            self.therapy_text = customtkinter.CTkTextbox(
                 therapy_frame,
                 height=100,
                 width=600,
                 font=("Arial", 12)
             )
-            therapy_text.pack(padx=20, pady=10)
-            
+            self.therapy_text.pack(padx=20, pady=10)
+
             if current_therapy:
-                therapy_text.insert("1.0", current_therapy[0])
-            
-            # Save button
+                self.therapy_text.insert("1.0", current_therapy[1])
+
+            # Save button for therapy
             save_btn = customtkinter.CTkButton(
                 therapy_frame,
                 text="Save Therapy",
                 width=200,
                 fg_color="#b76ba3",
-                command=lambda: self.save_therapy(patient_id, patient_name, therapy_text.get("1.0", "end-1c"))
+                command=lambda: self.save_therapy(patient_id)
             )
             save_btn.pack(pady=20)
-            
+
         except sqlite3.Error as e:
             error_label = customtkinter.CTkLabel(
                 content_frame,
@@ -422,44 +436,28 @@ class OSAPatientsView(customtkinter.CTk):
         finally:
             conn.close()
 
-    def save_therapy(self, patient_id, patient_name, therapy_text):
+
+    def save_therapy(self, patient_id):
+        new_note = self.therapy_text.get("1.0", "end-1c")
         conn = sqlite3.connect("Database_proj.db")
         cursor = conn.cursor()
-        
         try:
-            # Insert new therapy
-            cursor.execute("""
-                INSERT INTO Therapy (PatientID, Note)
-                VALUES (?, ?)
-            """, (patient_id, therapy_text))
-            
-            # Create notification for patient
-            message = "Your therapy has been updated by your doctor"
-            cursor.execute("""
-                INSERT INTO Notifications (PatientID, PatientName, Type, Message)
-                VALUES (?, ?, 'THERAPY', ?)
-            """, (patient_id, patient_name, message))
+            if self.current_therapy_id:
+                cursor.execute("""
+                    UPDATE Therapy SET Note = ? WHERE ID = ?
+                """, (new_note, self.current_therapy_id))
+            else:
+                cursor.execute("""
+                    INSERT INTO Therapy (PatientID, Note) VALUES (?, ?)
+                """, (patient_id, new_note))
             
             conn.commit()
-            
-            # Show success message
-            success_label = customtkinter.CTkLabel(
-                self.main_frame,
-                text="Therapy updated successfully!",
-                font=("Arial", 16),
-                text_color="green"
-            )
-            success_label.pack(pady=20)
-            
+            customtkinter.CTkLabel(self.main_frame, text="Therapy saved!", text_color="green").pack()
         except sqlite3.Error as e:
-            error_label = customtkinter.CTkLabel(
-                self.main_frame,
-                text=f"Error saving therapy: {str(e)}",
-                text_color="red"
-            )
-            error_label.pack(pady=20)
+            customtkinter.CTkLabel(self.main_frame, text=f"Error saving therapy: {e}", text_color="red").pack()
         finally:
             conn.close()
+
 
     def get_osa_patients(self):
         conn = sqlite3.connect("Database_proj.db")
@@ -469,6 +467,29 @@ class OSAPatientsView(customtkinter.CTk):
         column_names = [description[0] for description in cursor.description]
         conn.close()
         return column_names, rows
+    
+    def save_drugs(self, patient_id):
+        conn = sqlite3.connect("Database_proj.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("DELETE FROM Drugs WHERE PatientID = ?", (patient_id,))
+            
+            for note_entry, start_entry, end_entry in self.drug_entries:
+                note = note_entry.get()
+                start = start_entry.get()
+                end = end_entry.get()
+                cursor.execute("""
+                    INSERT INTO Drugs (PatientID, Note, StartDate, EndDate)
+                    VALUES (?, ?, ?, ?)
+                """, (patient_id, note, start, end))
+
+            conn.commit()
+            customtkinter.CTkLabel(self.main_frame, text="Drugs saved!", text_color="green").pack()
+        except sqlite3.Error as e:
+            customtkinter.CTkLabel(self.main_frame, text=f"Error saving drugs: {e}", text_color="red").pack()
+        finally:
+            conn.close()
+
 
 if __name__ == "__main__":
     app = OSAPatientsView(user_id=1)  # oppure un altro id valido

@@ -175,8 +175,11 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 """, [
     ("Luca", "Bianchi", "2000-05-15", 1.75, 70, 33, "M", "Italiano", "Nessuna", "PAT001", "password123", "1234567890"),
     ("Lucia", "Garofalo", "2004-06-15", 1.65, 60, 25, "F", "Italiano", "Nessuna", "PAT002", "345678", "1234567899"),
-    ("Marco", "Verdi", "1992-03-22", 1.80, 85, 32, "M", "Italiano", "Asma lieve", "PAT003", "pass333", "1234562222")
+    ("Marco", "Verdi", "1992-03-22", 1.80, 85, 32, "M", "Italiano", "Asma lieve", "PAT003", "pass333", "1234562222"),
+    ("Marco", "Esposito", "1956-06-16", 1.87, 90, 30, "M", "Italiano", "Osa moderata", "PAT009", "pass333", "1234562226"),
+    ("Angelo", "Galli", "1992-04-26", 1.70, 80, 30, "M", "Italiano", "Osa moderata", "PAT010", "pass333", "1234562228")
 ])
+
 
 # Popola Appointments da 16 Maggio a 16 Giugno 2025
 slot_times = ["08:30", "09:30", "10:30", "11:30", "12:30", "13:30", "14:30", "15:30", "16:30"]
@@ -195,14 +198,12 @@ while current_date <= end_date:
 
 # Slot prenotati
 booked_slots = [
-    ("2025-05-19", "08:30", "DOC001", "PAT001", "Luca Bianchi"),
-    ("2025-05-20", "10:30", "DOC002", "PAT002", "Lucia Garofalo"),
-    ("2025-05-23", "13:30", "DOC001", "PAT001", "Luca Bianchi"),
-    ("2025-06-03", "15:30", "DOC002", "PAT002", "Lucia Garofalo")
+    ("2025-05-19", "08:30", "DOC001", "Mario Rossi", "booked", "PAT001", "Luca Bianchi"),
+    ("2025-05-23", "13:30", "DOC001", "Mario Rossi", "booked", "PAT002", "Lucia Garofalo"),
 ]
-for date, time_slot, doc_id, pat_id, pat_name in booked_slots:
-    doctor_name = next(name for d_id, name in doctors if d_id == doc_id)
-    appointments.append((date, time_slot, doc_id, doctor_name, 'booked', pat_id, pat_name))
+for date, time_slot, doc_id, doctor_name, status, pat_id, pat_name in booked_slots:
+    appointments.append((date, time_slot, doc_id, doctor_name, status, pat_id, pat_name))
+
 
 cursor.executemany("""
 INSERT INTO Appointments (date, time, doctor_id, doctor_name, status, patient_id, patient_name)
@@ -224,7 +225,8 @@ VALUES (?, ?, ?, ?)
 therapies = [
     ("PAT001", "Monitoraggio continuo con eventuale follow-up dopo 10 giorni"),
     ("PAT002", "Controllo pressorio settimanale"),
-    ("PAT003", "Controllo asma trimestrale")
+    ("PAT003", "Controllo asma trimestrale"),
+    ("PAT010", "CPAP_350_x7_gg")
 ]
 cursor.executemany("""
 INSERT OR IGNORE INTO Therapy (PatientID, Note)
@@ -241,7 +243,20 @@ indexes = [
     ("PAT010", "2025-04-22", 2.5, 1.8, 96.5, 90.0),
     ("PAT011", "2025-04-22", 4.5, 0.7, 96.5, 90.0),
     ("PAT021", "2025-04-22", 7.5, 1.3, 96.5, 90.0),
-    ("PAT010", "2025-04-24", 0.5, 1.5, 96.5, 90.0)
+    ("PAT009", "2025-04-24", 0.5, 1.5, 96.5, 90.0),
+    ("PAT009", "2025-04-24", 0.5, 1.5, 96.5, 90.0),
+    ("PAT009", "2025-04-25", 0.5, 1.5, 96.5, 90.0),
+    ("PAT009", "2025-04-26", 0.5, 1.5, 96.5, 90.0),
+    ("PAT009", "2025-04-27", 0.5, 1.5, 96.5, 90.0),
+    ("PAT009", "2025-04-28", 0.5, 1.5, 96.5, 90.0),
+    ("PAT009", "2025-04-29", 0.5, 1.5, 96.5, 90.0),
+    ("PAT009", "2025-04-30", 0.5, 1.5, 96.5, 90.0),
+    ("PAT010", "2025-04-24", 0.5, 1.5, 96.5, 90.0),
+    ("PAT010", "2025-04-25", 1, 1, 96.5, 90.0),
+    ("PAT010", "2025-04-26", 1.2, 1.5, 96.5, 90.0),
+    ("PAT010", "2025-04-27", 0.8, 7, 96.5, 90.0),
+    ("PAT010", "2025-04-28", 4, 8, 96.5, 90.0),
+    ("PAT010", "2025-04-29", 10, 15, 96.5, 90.0)
 ]
 cursor.executemany("""
 INSERT OR IGNORE INTO Indexes (PatientID, Date, ValueAHI, ValueODI, MeanSpO2, MinSpO2)
